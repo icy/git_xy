@@ -32,13 +32,18 @@ Now execute the script
 F_GIT_SYNC_CONFIG="git_sync.config-sample.txt" ./git_sync.sh
 ```
 
-the script will fetch changes from `pacapt` repository
+the script will fetch changes in `lib` directory from branch `ng`
+in the `pacapt` repository,
+and update the same repository on another branch `master`.
+If changes are detected, a new branch will be created and/or
+some pull request will be generated.
 
 ## TODO
 
 - [ ] Make sure the top/root directory is not used
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
+- [ ] Allow a repository to update itself
 
 ## Why
 
