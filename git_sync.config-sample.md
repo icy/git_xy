@@ -1,0 +1,8 @@
+# Configuration file to generate update and PR automatically
+# to synchornize sub directories between git repositories.
+
+# Syntax
+#   source_reposity branch path/   dst_repository branch path/
+
+git@github.com:icy/pacapt ng lib/   git@github.com:icy/pacapt master lib/
+git@github.com:foo/bar    foo bar/  git@github.com:icy/foo bar foobar
