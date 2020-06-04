@@ -4,9 +4,9 @@
 semi-automatically, and may generate pull requests on `github` if
 changes are detected on the destination repository.
 
-`git_xy` reads a list of watch configuration from file, and for each
-of them, `git_xy` fetches changes from the source repository and
-synchronizes them to destination path (thanks to `rsync`)
+`git_xy` reads a list of source/destination in a configuration file,
+and for each of them, `git_xy` fetches changes from the source repository
+and synchronizes them to destination path (thanks to `rsync`)
 
 ## TOC
 
@@ -44,6 +44,7 @@ some pull request will be generated.
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
 - [x] Allow a repository to update itself
+- [ ] Provide a link to the original source
 
 ## Why
 
