@@ -30,7 +30,7 @@ git_sync_env() {
     return 1
   fi
 
-  if [[ -d "$D_GIT_SYNC" ]]; then
+  if [[ ! -d "$D_GIT_SYNC" ]]; then
     log "ERROR: Local share directory not found: $F_GIT_SYNC_CONFIG"
     return 1
   fi
