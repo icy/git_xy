@@ -100,6 +100,9 @@ git_pull() {
 
 __hook_post_commit() {
   log "Executing" gh pr create
+  gh pr create \
+    --base "$dst_branch" \
+    --fill
 }
 
 __dst_commit_changes_if_any() {
@@ -113,7 +116,7 @@ __dst_commit_changes_if_any() {
       exit 0
     }
 
-    git commit -a -m"git_xy from $src_repo branch=$src_branch path=$src_path
+    git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
 
 git_xy:
   version: 0.0.0

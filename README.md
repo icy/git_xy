@@ -38,9 +38,14 @@ and update the same repository on another branch `master`.
 If changes are detected, a new branch will be created and/or
 some pull request will be generated.
 
+Samples Prs on Github:
+
+* https://github.com/icy/pacapt/pull/136
+* https://github.com/icy/pacapt/pull/135
+
 ## TODO
 
-- [ ] Make sure the top/root directory is not used
+- [x] Make sure the top/root directory is not used (we allow that)
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
 - [x] Allow a repository to update itself
@@ -62,9 +67,10 @@ There are many tools trying to solve the code-sharing problem:
 * https://github.com/lerna/lerna (javascript only)
 * https://gerrit.googlesource.com/git-repo/ (Android only?)
 
-Well, there are too many tools, aren't they?
+Well, there are too many tools...
 What I really need is a simple way to pull changes from some repository
-to another repository, generates some pull request for review.
+to another repository, generates some pull request for reviewing,
+and the downstream maintainer will decide what they would do next.
 
 Morever, this process should be done automatically when the upstream
 repository is updated. Human intervention is not the right way when
