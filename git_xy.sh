@@ -17,27 +17,27 @@ github_cli_install() {
   echo "https://github.com/cli/cli/releases/download/v0.9.0/gh_0.9.0_linux_amd64.tar.gz"
 }
 
-git_sync_env() {
-  F_GIT_SYNC_CONFIG="${F_GIT_SYNC_CONFIG:-git_sync.config}"
-  D_GIT_SYNC="$HOME/.local/share/git_sync/"
+git_xy_env() {
+  GIT_XY_CONFIG="${GIT_XY_CONFIG:-git_xy.config}"
+  D_GIT_SYNC="$HOME/.local/share/git_xy/"
 
   export D_GIT_SYNC
-  export F_GIT_SYNC_CONFIG
+  export GIT_XY_CONFIG
   mkdir -pv "$D_GIT_SYNC"
 
-  if [[ ! -f "$F_GIT_SYNC_CONFIG" ]]; then
-    log "ERROR: Configuration file not found: $F_GIT_SYNC_CONFIG"
+  if [[ ! -f "$GIT_XY_CONFIG" ]]; then
+    log "ERROR: Configuration file not found: $GIT_XY_CONFIG"
     return 1
   fi
 
   if [[ ! -d "$D_GIT_SYNC" ]]; then
-    log "ERROR: Local share directory not found: $F_GIT_SYNC_CONFIG"
+    log "ERROR: Local share directory not found: $GIT_XY_CONFIG"
     return 1
   fi
 }
 
 config() {
-  < "$F_GIT_SYNC_CONFIG" grep -v '#' \
+  < "$GIT_XY_CONFIG" grep -v '#' \
   | awk 'NF >= 6'
 }
 
@@ -56,27 +56,27 @@ repo_uri_to_local_name() {
   echo "$repo"
 }
 
+# $1: repo
+# $2: prefix
 repo_local_full_path() {
-  echo "$D_GIT_SYNC/$(repo_uri_to_local_name "${1}")/"
+  echo "${D_GIT_SYNC}/${2:-}$(repo_uri_to_local_name "${1}")/"
 }
 
 git_pull() {
   repo="${1}"
-  branch="${2:-}"
-
-  local_full_path="$(repo_local_full_path "$repo")"
+  local_full_path="${2}"
+  branch="${3:-}"
 
   log "Pulling $repo ==> $local_full_path"
   (
     if [[ ! -d "$local_full_path" ]]; then
-      git clone "$repo" "$local_full_path" || return
+      git clone "$repo" "${local_full_path}" || return
     fi
 
     cd "$local_full_path"/ \
     && git reset --hard \
     && git checkout master \
     && git fetch --all --prune --prune-tags \
-    && git reset --hard origin/master \
     || exit
 
     if [[ -n "$branch" ]]; then
@@ -88,7 +88,7 @@ git_pull() {
 }
 
 __hook_post_commit() {
-  gh pr create
+  log "Executing" gh pr create
 }
 
 __dst_commit_changes_if_any() {
@@ -102,9 +102,9 @@ __dst_commit_changes_if_any() {
       exit 0
     }
 
-    git commit -a -m"git_sync from $src_repo $src_branch//$src_path
+    git commit -a -m"git_xy from $src_repo $src_branch//$src_path
 
-git_sync:
+git_xy:
   version: 0.0.0
 src:
   repo    : $src_repo
@@ -127,7 +127,7 @@ log() {
   echo >&2 ":: ${FUNCNAME[1]:-}: $*"
 }
 
-git_sync() {
+git_xy() {
   n_config=0
   n_config_ok=0
 
@@ -146,8 +146,8 @@ git_sync() {
     src_path="${src_path}/"
     dst_path="${dst_path}/"
 
-    src_local_full_path="$(repo_local_full_path "$src_repo")"
-    dst_local_full_path="$(repo_local_full_path "$dst_repo")"
+    src_local_full_path="$(repo_local_full_path "$src_repo" "src_")"
+    dst_local_full_path="$(repo_local_full_path "$dst_repo" "dst_")"
 
     if [[ "$src_local_full_path" == "$dst_local_full_path" ]]; then
       log "Skipping $transfer_request"
@@ -157,14 +157,14 @@ git_sync() {
       continue
     fi
 
-    git_pull "$src_repo" "$src_branch" || continue
+    git_pull "$src_repo" "$src_local_full_path" "$src_branch" || continue
 
     if [[ ! -d "$src_local_full_path/$src_path" ]]; then
       log "ERROR: Expected path not found: $src_local_full_path/$src_path"
       continue
     fi
 
-    git_pull "$dst_repo" "$dst_branch" || continue
+    git_pull "$dst_repo" "$dst_local_full_path" "$dst_branch" || continue
 
     src_commit_hash="$(cd "$src_local_full_path" && git rev-parse HEAD)"
     dst_commit_hash="$(cd "$dst_local_full_path" && git rev-parse HEAD)"
@@ -183,7 +183,7 @@ git_sync() {
       mkdir -pv "$dst_local_full_path/$dst_path"
       cd "$dst_local_full_path/$dst_path" || exit
 
-      dst_branch_sync="git_sync/${src_commit_hash}/${dst_commit_hash}"
+      dst_branch_sync="git_xy/${src_branch}/${dst_branch}"
       git branch -D "$dst_branch_sync" || true
 
       git checkout -b "$dst_branch_sync"
@@ -205,8 +205,9 @@ git_sync() {
 
 main() {
   requirements_check \
-  && git_sync_env \
-  && git_sync
+  && git_xy_env \
+  && git_xy
 }
 
+set -u
 "${@:-main}"

@@ -1,11 +1,11 @@
 ## Description
 
-`git_sync` helps to synchronize sub directories between git repositories
+`git_xy` helps to synchronize sub directories between git repositories
 semi-automatically, and may generate pull requests on `github` if
 changes are detected on the destination repository.
 
-`git_sync` reads a list of watch configuration from file, and for each
-of them, `git_sync` fetches changes from the source repository and
+`git_xy` reads a list of watch configuration from file, and for each
+of them, `git_xy` fetches changes from the source repository and
 synchronizes them to destination path (thanks to `rsync`)
 
 ## TOC
@@ -20,7 +20,7 @@ synchronizes them to destination path (thanks to `rsync`)
 
 **WARNING:** The project is still in `\alpha` stage.
 
-See also in [git_sync.config-sample.txt](git_sync.config-sample.txt).
+See also in [git_xy.config-sample.txt](git_xy.config-sample.txt).
 
 ```
 git@github.com:icy/pacapt ng lib/ git@github.com:icy/pacapt master lib/
@@ -29,7 +29,7 @@ git@github.com:icy/pacapt ng lib/ git@github.com:icy/pacapt master lib/
 Now execute the script
 
 ```
-F_GIT_SYNC_CONFIG="git_sync.config-sample.txt" ./git_sync.sh
+GIT_XY_CONFIG="git_xy.config-sample.txt" ./git_xy.sh
 ```
 
 the script will fetch changes in `lib` directory from branch `ng`
@@ -43,7 +43,7 @@ some pull request will be generated.
 - [ ] Make sure the top/root directory is not used
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
-- [ ] Allow a repository to update itself
+- [x] Allow a repository to update itself
 
 ## Why
 
