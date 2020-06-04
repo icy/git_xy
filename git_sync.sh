@@ -208,3 +208,5 @@ main() {
   && git_sync_env \
   && git_sync
 }
+
+"${@:-main}"
