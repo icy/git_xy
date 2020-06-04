@@ -20,7 +20,7 @@ synchronizes them to destination path (thanks to `rsync`)
 
 **WARNING:** The project is still in `\alpha` stage.
 
-See also in [git_sync.config-sample.md](git_sync.config-sample.md).
+See also in [git_sync.config-sample.txt](git_sync.config-sample.txt).
 
 ```
 git@github.com:icy/pacapt ng lib/ git@github.com:icy/pacapt master lib/
@@ -29,7 +29,7 @@ git@github.com:icy/pacapt ng lib/ git@github.com:icy/pacapt master lib/
 Now execute the script
 
 ```
-F_GIT_SYNC_CONFIG="git_sync.config-sample.md" ./git_sync.sh
+F_GIT_SYNC_CONFIG="git_sync.config-sample.txt" ./git_sync.sh
 ```
 
 the script will fetch changes from `pacapt` repository
