@@ -226,9 +226,14 @@ git_xy() {
       mkdir -pv "$dst_local_full_path/$dst_path"
       cd "$dst_local_full_path/$dst_path" || exit
 
-      git branch -D "$dst_branch_sync" || true
-
-      git checkout -b "$dst_branch_sync"
+      if git rev-parse "origin/$dst_branch_sync" 1>/dev/null 2>&1; then
+        log "Reusing remote branch origin/$dst_branch_sync..."
+        git checkout "$dst_branch_sync"
+      else
+        # First we delete any local branch with the same name..
+        git branch -D "$dst_branch_sync" || true
+        git checkout -b "$dst_branch_sync"
+      fi
     ) \
     || {
       last_error="ERROR: Failed to created git_xy branch: $dst_branch_sync"

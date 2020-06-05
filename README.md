@@ -119,6 +119,7 @@ Well, it's so easy right? It's an automation support of your handy commands.
 
 Done
 
+- [x] Re-use existing `git_xy` branch
 - [x] Better hook to handle where PRs will be created
 - [x] Add some information from the last commit of the source repository
 - [x] Make sure the top/root directory is not used (we allow that)
