@@ -106,7 +106,23 @@ __hook_post_commit() {
 
   set -x
   gh pr create \
-    --fill \
+    --title "git_xy/$src_repo branch $src_branch path $src_path" \
+    --body "\`\`\`
+git_xy:
+  version: 0.0.0
+src:
+  repo    : $src_repo
+  branch  : $src_branch
+  path    : $src_path
+  commit  : $src_commit_hash
+  subject : $src_commit_subject
+dst:
+  repo    : $dst_repo
+  branch  : $dst_branch
+  path    : $dst_path
+  commit  : $dst_commit_hash
+\`\`\`" \
+        \
     --base "$dst_branch" \
     $_pr_base
   set +x
