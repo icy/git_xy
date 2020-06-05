@@ -25,10 +25,6 @@ requirements_check() {
   done
 }
 
-github_cli_install() {
-  echo "https://github.com/cli/cli/releases/download/v0.9.0/gh_0.9.0_linux_amd64.tar.gz"
-}
-
 git_xy_env() {
   GIT_XY_CONFIG="${GIT_XY_CONFIG:-git_xy.config}"
   D_GIT_SYNC="$HOME/.local/share/git_xy/"
@@ -101,9 +97,19 @@ git_pull() {
 
 __hook_post_commit() {
   log "Executing" gh pr create
+
+  if [[ -n "$pr_base" ]]; then
+    _pr_base="--repo $pr_base"
+  else
+    _pr_base=""
+  fi
+
+  set -x
   gh pr create \
+    --fill \
     --base "$dst_branch" \
-    --fill
+    $_pr_base
+  set +x
 }
 
 __dst_commit_changes_if_any() {
@@ -125,13 +131,14 @@ git_xy:
 src:
   repo    : $src_repo
   branch  : $src_branch
-  commit  : $src_commit_hash
   path    : $src_path
+  commit  : $src_commit_hash
+  subject : $src_commit_subject
 dst:
   repo    : $dst_repo
   branch  : $dst_branch
-  commit  : $dst_commit_hash
   path    : $dst_path
+  commit  : $dst_commit_hash
 \`\`\`
 "
       git branch
@@ -160,12 +167,12 @@ git_xy() {
   n_config_ok=0
   last_error=""
 
-  while read -r src_repo src_branch src_path dst_repo dst_branch dst_path _; do
+  while read -r src_repo src_branch src_path dst_repo dst_branch dst_path pr_base _; do
     (( n_config++ ))
 
     __last_error
 
-    transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path"
+    transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base]"
 
     if [[ -z "$dst_branch" ]]; then
       last_error="ERROR: Configuration is not valid: $transfer_request"
@@ -178,6 +185,8 @@ git_xy() {
 
     src_path="${src_path}/"
     dst_path="${dst_path}/"
+    src_path="$(sed -r -e "s#/+#/#g" <<<"$src_path")"
+    dst_path="$(sed -r -e "s#/+#/#g" <<<"$dst_path")"
 
     src_local_full_path="$(repo_local_full_path "$src_repo" "src_")"
     dst_local_full_path="$(repo_local_full_path "$dst_repo" "dst_")"
@@ -196,6 +205,7 @@ git_xy() {
     git_pull "$dst_repo" "$dst_local_full_path" "$dst_branch" || continue
 
     src_commit_hash="$(cd "$src_local_full_path" && git rev-parse HEAD)"
+    src_commit_subject="$(cd "$src_local_full_path" && git log -1 --pretty="format:%s")"
     dst_commit_hash="$(cd "$dst_local_full_path" && git rev-parse HEAD)"
 
     if [[ -z "$src_commit_hash" || -z "$dst_commit_hash" ]]; then
@@ -208,7 +218,7 @@ git_xy() {
       continue
     fi
 
-    dst_branch_sync="git_xy_${src_branch}/${src_path}__${dst_branch}/${dst_path}"
+    dst_branch_sync="git_xy__${src_branch}/${src_path}__${dst_branch}/${dst_path}"
     # dst_branch_sync="${dst_branch_sync//\//_root_}"
     dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 

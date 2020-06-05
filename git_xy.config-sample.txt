@@ -2,10 +2,13 @@
 # to synchornize sub directories between git repositories.
 
 # Syntax
-#   source_reposity branch path/   dst_repository branch path/
+#   source_reposity branch path/   dst_repository branch path/ [pr_base_repo]
+#
+# The option `pr_base_repo` is optional and is used to specify where
+# you want the PR arrives. By default, it's the upstream repository.
 
-git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/
-git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  ng      lib/
+git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
+git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  ng      lib/    icyfork/pacapt
 git@github.com:foo/bar        foo bar/   git@github.com:icyfork/foo     bar     foobar
-git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/
-git@github.com:icyfork/pacapt ng     /   git@github.com:icyfork/pacapt  master  /
+git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
+git@github.com:icyfork/pacapt ng     /   git@github.com:icyfork/pacapt  master  /       icyfork/pacapt

@@ -4,14 +4,21 @@
 semi-automatically, and may generate pull requests on `github` if
 changes are detected on the destination repository.
 
-`git_xy` reads a list of source/destination in a configuration file,
-and for each of them, `git_xy` fetches changes from the source repository
-and synchronizes them to destination path (thanks to `rsync`)
+`git_xy` reads a list of source/destination specifications from a
+configuration file, and for each of them, `git_xy` fetches changes
+from the source repository and synchronizes them to destination path
+(thanks to `rsync`). It finally generates commit and creates new PR
+(pull request) if necessary.
 
 ## TOC
 
 * [Description](#description)
 * [Usage](#usage)
+  * [Installation](#installation)
+  * [Configuration](#configuration)
+  * [Invocation](#invocation)
+  * [Sample Prs on Github](#saple-prs-on-github)
+  * [How it works](#how-it-works)
 * [TODO](#todo)
 * [Why](#why)
 * [Author. License](#author-license)
@@ -20,11 +27,41 @@ and synchronizes them to destination path (thanks to `rsync`)
 
 **WARNING:** The project is still in `\alpha` stage.
 
-See also in [git_xy.config-sample.txt](git_xy.config-sample.txt).
+### Installation
+
+`git_xy` is a Bash4 script. It requires some additional tools on system:
+
+* GNU tools: `awk`, `rsync`, `bash`, `git`, `grep`, `sed`
+* Github command tool for PR creation: https://github.com/cli/cli/releases
+
+The main program `git_xy` can be installed anywhere on your search path
+
+```
+$ sudo wget -O /usr/local/bin/git_xy \
+    https://github.com/icy/git_xy/raw/ng/git_xy.sh
+
+$ sudo chmod 755 /usr/local/bin/git_xy
+```
+
+### Configuration
+
+Configuration consists of source/destination specification in the following
+format:
+
+```
+source_reposity branch path/   dst_repository branch path/ [pr_base_repo]
+```
+
+The option `pr_base_repo` is optional and is used to specify where
+you want the PR arrives. By default, it's the upstream repository.
+
+See examples in [git_xy.config-sample.txt](git_xy.config-sample.txt).
 
 ```
 git@github.com:icy/pacapt ng lib/ git@github.com:icy/pacapt master lib/
 ```
+
+### Invocation
 
 Now execute the script
 
@@ -38,22 +75,51 @@ and update the same repository on another branch `master`.
 If changes are detected, a new branch will be created and/or
 some pull request will be generated.
 
-Samples Prs on Github:
+### Sample Prs on Github
 
+* https://github.com/icyfork/pacapt/pull/1
 * https://github.com/icy/pacapt/pull/140
 * https://github.com/icy/pacapt/pull/139
+
+### How it works
+
+Nothing magic, it's a wrapper of `git clone, rsync and git commit`:)
+Let's say we have configuration file
+
+```
+src_repo src_branch src_path dst_repo dst_branch dst_path
+```
+
+the script will do as below
+
+* Create a clone of the `src_repo` in `~/.local/share/git_xy/src_repo`
+  (The actual folder name is a bit different to avoid some special characters
+  in the user input.)
+* Check out the existing branch `src_branch`
+* Create a clone of the `dest_repo` in `~/.local/share/git_xy/dst_repo`
+* Check out the existing branch `dst_branch`
+* Create new branch from `dst_branch`. This new branch is specially used for PR creation.
+  The name of the new branch is derived from `git_xy__${src_branch}/${src_path}__${dst_branch}/${dst_path}`
+* Use `rsync` to synchronize the contents of the `src_path` and `dst_path`.
+  On the local machine where the script runs, it's a variant of the command
+  `rsync -ra --delete SRC/ DST/` here
+  `SRC` is `~/.local/share/git_xy/src_repo/src_path/` and
+  `DST` is `~/.local/share/git_xy/dst_repo/dst_path/`
+* Generate new command and/or use the external tool `gh` to generate PR
+
+Well, it's so easy right? It's an automation support of your handy commands.
 
 ## TODO
 
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
 - [ ] Provide a link to the original source
-- [ ] Add some information from the last commit of the source repository
 - [ ] More `POSIX` ;)
-- [ ] Better hook to handle where PRs will be created
 
 Done
 
+- [x] Better hook to handle where PRs will be created
+- [x] Add some information from the last commit of the source repository
 - [x] Make sure the top/root directory is not used (we allow that)
 - [x] Allow a repository to update itself
 
