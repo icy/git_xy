@@ -127,7 +127,8 @@ the script will do as below
   `rsync -ra --delete SRC/ DST/` here
   `SRC` is `~/.local/share/git_xy/src_repo/src_path/` and
   `DST` is `~/.local/share/git_xy/dst_repo/dst_path/`
-* Generate new commit and/or use the external tool `gh` to generate PR
+* Generate new commit
+* If specified, execute the hook to generate new pull request on Github
 
 Well, it's so easy right? It's an automation support of your handy commands.
 
