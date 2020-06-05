@@ -40,8 +40,8 @@ some pull request will be generated.
 
 Samples Prs on Github:
 
-* https://github.com/icy/pacapt/pull/136
-* https://github.com/icy/pacapt/pull/135
+* https://github.com/icy/pacapt/pull/140
+* https://github.com/icy/pacapt/pull/139
 
 ## TODO
 
