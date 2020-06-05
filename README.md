@@ -13,7 +13,7 @@ and synchronizes them to destination path (thanks to `rsync`)
 * [Description](#description)
 * [Usage](#usage)
 * [TODO](#todo)
-* [Why](#nhy)
+* [Why](#why)
 * [Author. License](#author-license)
 
 ## Usage
