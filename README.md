@@ -45,11 +45,17 @@ Samples Prs on Github:
 
 ## TODO
 
-- [x] Make sure the top/root directory is not used (we allow that)
 - [ ] Create a hook script to create pull requests
 - [ ] Add tests and automation support for the project
-- [x] Allow a repository to update itself
 - [ ] Provide a link to the original source
+- [ ] Add some information from the last commit of the source repository
+- [ ] More `POSIX` ;)
+- [ ] Better hook to handle where PRs will be created
+
+Done
+
+- [x] Make sure the top/root directory is not used (we allow that)
+- [x] Allow a repository to update itself
 
 ## Why
 

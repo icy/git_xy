@@ -11,6 +11,7 @@ requirements_check() {
     bash
     git
     grep
+    sed
     gh
   "
 
@@ -118,6 +119,7 @@ __dst_commit_changes_if_any() {
 
     git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
 
+\`\`\`
 git_xy:
   version: 0.0.0
 src:
@@ -130,6 +132,7 @@ dst:
   branch  : $dst_branch
   commit  : $dst_commit_hash
   path    : $dst_path
+\`\`\`
 "
       git branch
       git log -1
@@ -206,7 +209,8 @@ git_xy() {
     fi
 
     dst_branch_sync="git_xy_${src_branch}/${src_path}__${dst_branch}/${dst_path}"
-    dst_branch_sync="${dst_branch_sync//\//-}"
+    # dst_branch_sync="${dst_branch_sync//\//_root_}"
+    dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 
     (
       mkdir -pv "$dst_local_full_path/$dst_path"
