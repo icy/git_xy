@@ -141,6 +141,7 @@ There are many tools trying to solve the code-sharing problem:
 * https://github.com/teambit/bit (bit only)
 * https://github.com/lerna/lerna (javascript only)
 * https://gerrit.googlesource.com/git-repo/ (Android only?)
+* https://github.com/microsoft/VFSForGit (sic, Windows only)
 
 Well, there are too many tools...
 What I really need is a simple way to pull changes from some repository
