@@ -164,7 +164,9 @@ dst:
 \`\`\`
 "
       # shellcheck disable=SC2086
-      git push ${GIT_XY_PUSH_OPTIONS:-} origin "$dst_branch_sync"
+      git push ${GIT_XY_PUSH_OPTIONS:-} origin "$dst_branch_sync" \
+      || exit
+
       git branch
       git log -1
 
