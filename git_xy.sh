@@ -28,9 +28,12 @@ requirements_check() {
 git_xy_env() {
   GIT_XY_CONFIG="${GIT_XY_CONFIG:-git_xy.config}"
   D_GIT_SYNC="$HOME/.local/share/git_xy/"
+  GIT_XY_HOOKS="${GIT_XY_HOOKS-gh}"
 
   export D_GIT_SYNC
   export GIT_XY_CONFIG
+  export GIT_XY_HOOKS
+
   mkdir -pv "$D_GIT_SYNC"
 
   if [[ ! -f "$GIT_XY_CONFIG" ]]; then
@@ -95,7 +98,13 @@ git_pull() {
   )
 }
 
-__hook_post_commit() {
+__hook_gh() {
+  grep -qs " gh " <<< ": ${GIT_XY_HOOKS} :" \
+  || {
+    log "WARNING: hook_gh was disabled."
+    return 0
+  }
+
   log "Executing" gh pr create
 
   if [[ -n "$pr_base" ]]; then
@@ -104,8 +113,9 @@ __hook_post_commit() {
     _pr_base=""
   fi
 
-  set -x
   gh pr create \
+    $_pr_base \
+    --base "$dst_branch" \
     --title "git_xy/$src_repo branch $src_branch path $src_path" \
     --body "\`\`\`
 git_xy:
@@ -121,11 +131,7 @@ dst:
   branch  : $dst_branch
   path    : $dst_path
   commit  : $dst_commit_hash
-\`\`\`" \
-        \
-    --base "$dst_branch" \
-    $_pr_base
-  set +x
+\`\`\`"
 }
 
 __dst_commit_changes_if_any() {
@@ -157,9 +163,12 @@ dst:
   commit  : $dst_commit_hash
 \`\`\`
 "
+      # shellcheck disable=SC2086
+      git push ${GIT_XY_PUSH_OPTIONS:-} origin "$dst_branch_sync"
       git branch
       git log -1
-      __hook_post_commit
+
+      __hook_gh
   )
 }
 
@@ -234,9 +243,10 @@ git_xy() {
       continue
     fi
 
-    dst_branch_sync="git_xy__${src_branch}/${src_path}__${dst_branch}/${dst_path}"
+    src_repo_name_clean="$(repo_uri_to_local_name "$src_repo")"
+    dst_branch_sync="git_xy_${src_repo_name_clean}__${src_branch}__${dst_branch}"
     # dst_branch_sync="${dst_branch_sync//\//_root_}"
-    dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
+    # dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 
     (
       mkdir -pv "$dst_local_full_path/$dst_path"
@@ -244,6 +254,7 @@ git_xy() {
 
       if git rev-parse "origin/$dst_branch_sync" 1>/dev/null 2>&1; then
         log "Reusing remote branch origin/$dst_branch_sync..."
+        git branch -D "$dst_branch_sync" || true
         git checkout "$dst_branch_sync"
       else
         # First we delete any local branch with the same name..
@@ -256,7 +267,7 @@ git_xy() {
       continue
     }
 
-    rsync -rap -delete \
+    rsync -rap --delete \
       --exclude=".git/*" \
       "$src_local_full_path/$src_path" \
       "$dst_local_full_path/$dst_path" \
@@ -289,5 +300,7 @@ main() {
   && git_xy
 }
 
+set "${GIT_XY_SET_OPTIONS:-+x}"
 set -u
+
 "${@:-main}"
