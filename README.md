@@ -150,6 +150,7 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] Provide a link to the original source
 - [ ] More `POSIX` ;)
 - [ ] Better error reporting
+- [ ] `hook/gh`: Return zero if a PR already exists
 
 Done
 
