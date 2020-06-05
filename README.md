@@ -98,14 +98,15 @@ the script will do as below
 * Check out the existing branch `src_branch`
 * Create a clone of the `dest_repo` in `~/.local/share/git_xy/dst_repo`
 * Check out the existing branch `dst_branch`
-* Create new branch from `dst_branch`. This new branch is specially used for PR creation.
+* Create new branch from `dst_branch` (if neccessary).
+  This branch is specially used for PR creation.
   The name of the new branch is derived from `git_xy__${src_branch}/${src_path}__${dst_branch}/${dst_path}`
 * Use `rsync` to synchronize the contents of the `src_path` and `dst_path`.
   On the local machine where the script runs, it's a variant of the command
   `rsync -ra --delete SRC/ DST/` here
   `SRC` is `~/.local/share/git_xy/src_repo/src_path/` and
   `DST` is `~/.local/share/git_xy/dst_repo/dst_path/`
-* Generate new command and/or use the external tool `gh` to generate PR
+* Generate new commit and/or use the external tool `gh` to generate PR
 
 Well, it's so easy right? It's an automation support of your handy commands.
 
