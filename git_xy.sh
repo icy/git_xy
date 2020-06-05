@@ -302,5 +302,6 @@ main() {
 
 set "${GIT_XY_SET_OPTIONS:-+x}"
 set -u
+set +e
 
 "${@:-main}"
