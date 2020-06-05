@@ -115,6 +115,7 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] Add tests and automation support for the project
 - [ ] Provide a link to the original source
 - [ ] More `POSIX` ;)
+- [ ] Better error reporting
 
 Done
 
