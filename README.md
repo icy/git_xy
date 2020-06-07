@@ -157,12 +157,12 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] Add tests and automation support for the project
 - [ ] Provide a link to the original source
 - [ ] More `POSIX` ;)
-- [ ] Better error reporting
 - [ ] `hook/gh`: Return zero if a PR already exists
 - [ ] Sometimes we only need to create a PR without generate any commit
 
 Done
 
+- [x] Better error reporting
 - [x] Handle `--delete` option
 - [x] Create a hook script to create pull requests
 - [x] Gather multiple sub-folder in a single PR

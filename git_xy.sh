@@ -113,6 +113,7 @@ __hook_gh() {
     _pr_base=""
   fi
 
+  2>&1 \
   gh pr create \
     $_pr_base \
     --base "$dst_branch" \
@@ -131,22 +132,43 @@ dst:
   branch  : $dst_branch
   path    : $o_dst_path
   commit  : $dst_commit_hash
-\`\`\`"
+\`\`\`" \
+  | awk '
+      BEGIN{
+        _exist = 0
+      }
+      {
+        print;
+        if ($0 ~ /^a pull request for branch .+ already exists:/) {
+          _exist=1
+        }
+      }
+      END {
+        exit(_exist)
+      }
+    '
+
+  rets=("${PIPESTATUS[@]}")
+  if [[ "${rets[1]}" == 1 ]]; then
+    GIT_XY_ERRORS["_${transfer_request}"]="WARNING: Pull request already exists."
+    return 0
+  else
+    return "${rets[0]}"
+  fi
 }
 
 __dst_commit_changes_if_any() {
-  (
-    cd "$dst_local_full_path" || exit
-    git add "$dst_local_full_path/$dst_path" || exit
+  cd "$dst_local_full_path" || return
+  git add "$dst_local_full_path/$dst_path" || return
 
-    git_dirty \
-    || {
-      log "INFO: Nothing to commit. Src and Dst are up-to-date."
-      __hook_gh
-      exit "$?"
-    }
+  git_dirty \
+  || {
+    log "INFO: Nothing to commit. Src and Dst are up-to-date."
+    __hook_gh
+    return "$?"
+  }
 
-    git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
+  git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
 
 \`\`\`
 git_xy:
@@ -164,15 +186,14 @@ dst:
   commit  : $dst_commit_hash
 \`\`\`
 "
-      # shellcheck disable=SC2086
-      git push ${GIT_XY_PUSH_OPTIONS:-} origin "$dst_branch_sync" \
-      || exit
+    # shellcheck disable=SC2086
+    git push ${GIT_XY_PUSH_OPTIONS:-} origin "$dst_branch_sync" \
+    || return
 
-      git branch
-      git log -1
+    git branch
+    git log -1
 
-      __hook_gh
-  )
+    __hook_gh
 }
 
 log() {
@@ -184,6 +205,7 @@ log() {
 __last_error() {
   [[ -z "$last_error" ]] \
   || {
+    GIT_XY_ERRORS["$transfer_request"]="$last_error"
     log "$last_error"
     log "ERROR: git_xy failed to process the request: $transfer_request"
   }
@@ -299,8 +321,12 @@ git_xy() {
 
   __last_error
 
-  log "INFO: git_xy received $n_config request(s) and successfully proccessed $n_config_ok request(s)."
+  for _req in "${!GIT_XY_ERRORS[@]}"; do
+    log "REPORT: request: $_req"
+    log "REPORT: message: ${GIT_XY_ERRORS["$_req"]}"
+  done
 
+  log "INFO: git_xy received $n_config request(s) and successfully proccessed $n_config_ok request(s)."
   [[ "$n_config_ok" == "$n_config" ]]
 }
 
@@ -312,6 +338,10 @@ main() {
 
 GIT_XY_VERSION="1.0.0"
 export GIT_XY_VERSION
+
+declare -A GIT_XY_ERRORS
+GIT_XY_ERRORS=()
+export GIT_XY_ERRORS
 
 set "${GIT_XY_SET_OPTIONS:-+x}"
 set -u
