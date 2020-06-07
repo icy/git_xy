@@ -119,7 +119,7 @@ __hook_gh() {
     --title "git_xy/$src_repo branch $src_branch path $src_path" \
     --body "\`\`\`
 git_xy:
-  version: 0.0.0
+  version: ${GIT_XY_VERSION}
 src:
   repo    : $src_repo
   branch  : $src_branch
@@ -129,7 +129,7 @@ src:
 dst:
   repo    : $dst_repo
   branch  : $dst_branch
-  path    : $dst_path
+  path    : $o_dst_path
   commit  : $dst_commit_hash
 \`\`\`"
 }
@@ -142,14 +142,15 @@ __dst_commit_changes_if_any() {
     git_dirty \
     || {
       log "INFO: Nothing to commit. Src and Dst are up-to-date."
-      exit 0
+      __hook_gh
+      exit "$?"
     }
 
     git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
 
 \`\`\`
 git_xy:
-  version: 0.0.0
+  version: ${GIT_XY_VERSION}
 src:
   repo    : $src_repo
   branch  : $src_branch
@@ -159,7 +160,7 @@ src:
 dst:
   repo    : $dst_repo
   branch  : $dst_branch
-  path    : $dst_path
+  path    : $o_dst_path
   commit  : $dst_commit_hash
 \`\`\`
 "
@@ -214,6 +215,13 @@ git_xy() {
     dst_path="${dst_path}/"
     src_path="$(sed -r -e "s#/+#/#g" <<<"$src_path")"
     dst_path="$(sed -r -e "s#/+#/#g" <<<"$dst_path")"
+    o_dst_path="$dst_path"
+    if [[ "${dst_path:0:1}" == ":" ]]; then
+      dst_path="${dst_path:1}"
+      _rsync_delete="--delete"
+    else
+      _rsync_delete=""
+    fi
 
     src_local_full_path="$(repo_local_full_path "$src_repo" "src_")"
     dst_local_full_path="$(repo_local_full_path "$dst_repo" "dst_")"
@@ -269,7 +277,7 @@ git_xy() {
       continue
     }
 
-    rsync -rap --delete \
+    rsync -rap $_rsync_delete \
       --exclude=".git/*" \
       "$src_local_full_path/$src_path" \
       "$dst_local_full_path/$dst_path" \
@@ -301,6 +309,9 @@ main() {
   && git_xy_env \
   && git_xy
 }
+
+GIT_XY_VERSION="1.0.0"
+export GIT_XY_VERSION
 
 set "${GIT_XY_SET_OPTIONS:-+x}"
 set -u

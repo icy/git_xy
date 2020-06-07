@@ -52,10 +52,18 @@ Configuration consists of source/destination specification in the following
 format:
 
 ```
-source_reposity branch path/   dst_repository branch path/ [pr_base_repo]
+src_repo src_branch src_path   dst_repo dst_branch dest_path [pr_base]
 ```
+which reads in the order
 
-The option `pr_base_repo` is optional and is used to specify where
+* `src_repo`, `src_branch`, `src_path`: The source repository, branch and path
+* `dst_repo`, `dst_branch`, `dst_path`: The destination repository, branch and path.
+  By default, `rsync` without `--delete` option is used, which allows the
+  downstream (destination) path to contain their own additional files.
+  If you want destination to be exact the upstream, use the colon (`:`)
+  as prefix of the destination path, i.e., `:dst_path`.
+
+The last part `pr_base` is optional and is used to specify where
 you want the PR arrives. By default, it's the upstream repository.
 
 See examples in [git_xy.config-sample.txt](git_xy.config-sample.txt).
@@ -151,9 +159,11 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] More `POSIX` ;)
 - [ ] Better error reporting
 - [ ] `hook/gh`: Return zero if a PR already exists
+- [ ] Sometimes we only need to create a PR without generate any commit
 
 Done
 
+- [x] Handle `--delete` option
 - [x] Create a hook script to create pull requests
 - [x] Gather multiple sub-folder in a single PR
 - [x] Re-use existing `git_xy` branch
