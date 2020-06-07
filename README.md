@@ -184,7 +184,7 @@ There are many tools trying to solve the code-sharing problem:
   manually. More submodules to watch, more issues to handle.
 * `git subtree`:
   Quite similar to `git submodule`, but it doesn't provide fragile pointer.
-  Instead, it fetches all upstream commits and create some merge point
+  Instead, it fetches all upstream commits and creates some merge points
   in the current repository.
   This way it's more stable than `git submodule`,
   when you always have a copy of the upstream code in your repository.
@@ -236,5 +236,5 @@ micro-repository `design` (if any) :D
 
 ## Author. License
 
-The script is writtedn by Ky-Anh Huynh.
+The script is written by Ky-Anh Huynh.
 The work is released under a MIT license.
