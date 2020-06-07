@@ -176,18 +176,53 @@ Done
 
 There are many tools trying to solve the code-sharing problem:
 
-* `git submodule`
-* `git subtree`
-* https://github.com/ingydotnet/git-subrepo
-* https://github.com/twosigma/git-meta
-* https://github.com/mateodelnorte/meta
-* https://github.com/splitsh/lite
-* https://github.com/unravelin/tomono
-* https://sourceforge.net/projects/gitslave/
-* https://github.com/teambit/bit (bit only)
-* https://github.com/lerna/lerna (javascript only)
-* https://gerrit.googlesource.com/git-repo/ (Android only?)
-* https://github.com/microsoft/VFSForGit (sic, Windows only)
+* `git submodule`:
+  Create a pointer (commit hash) to the upstream repositories, and
+  check out the upstream repository as sub-directory of the current
+  repository upon request.
+  It's you and your team who watch changes on upstream and fetch them
+  manually. More submodules to watch, more issues to handle.
+* `git subtree`:
+  Quite similar to `git submodule`, but it doesn't provide fragile pointer.
+  Instead, it fetches all upstream commits and create some merge point
+  in the current repository.
+  This way it's more stable than `git submodule`,
+  when you always have a copy of the upstream code in your repository.
+  You get what you don't really mean: duplication of commits,
+  bigger size, confused/noisy commit messages,
+  and you have to learn how to merge (really?)
+  Good reading: https://www.atlassian.com/git/tutorials/git-subtree
+* https://github.com/ingydotnet/git-subrepo:
+  Another `git-slave`-liked project, which helps to manage multiple
+  small repositories. It uses `git work-tree`, and it helps to generate
+  pull/push/merge command in parallel. Forget your `git command`, as
+  you have to learn to use this new wrapper for all sub commands
+  (commit, pull, merge...) Written completely in Bash.
+* https://github.com/twosigma/git-meta:
+  Looked like another `git-slave` which uses `git-submodule` to create
+  the meta repository. Another NodeJs tool
+* https://github.com/mateodelnorte/meta:
+  Looked like another `git-slave`, which creates a meta repository
+  that includes multiple small repositories. You adapt both mono/micro
+  repository idea. Written in NodeJs...
+* https://github.com/splitsh/lite:
+  Split a repository to read-only standalone repositories
+* https://github.com/unravelin/tomono:
+  You are hating micro-`***` enough and you just want a big repository
+  that includes all your small repositories. This tool helps you.
+* https://sourceforge.net/projects/gitslave/:
+  The project is still on `sourceforge`, looked like it's not maintained.
+  The idea is to have meta project which handles multiple repository.
+  The basic tutorial is here:
+  http://gitslave.sourceforge.net/tutorial-basic.html.
+* https://github.com/teambit/bit (npm only):
+  Use this if your current Linux kernel is written in NodeJs.
+* https://github.com/lerna/lerna (javascript only):
+  Use this if your current Linux kernel is written in Javascript.
+* https://gerrit.googlesource.com/git-repo/ (Android only?):
+  Use this if your server is running on Android.
+* https://github.com/microsoft/VFSForGit (sic, Windows only):
+  Use this if you are running Linux inside a VM inside a Windows host.
 
 Well, there are too many tools...
 What I really need is a simple way to pull changes from some repository
