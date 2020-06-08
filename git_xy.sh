@@ -30,9 +30,12 @@ git_xy_env() {
   D_GIT_SYNC="$HOME/.local/share/git_xy/"
   GIT_XY_HOOKS="${GIT_XY_HOOKS-gh}"
 
+  GIT_XY_REVERSE="${GIT_XY_REVERSE:-}"
+
   export D_GIT_SYNC
   export GIT_XY_CONFIG
   export GIT_XY_HOOKS
+  export GIT_XY_REVERSE
 
   mkdir -pv "$D_GIT_SYNC"
 
@@ -124,7 +127,7 @@ git_xy:
 src:
   repo    : $src_repo
   branch  : $src_branch
-  path    : $src_path
+  path    : $o_src_path
   commit  : $src_commit_hash
   subject : $src_commit_subject
 dst:
@@ -176,7 +179,7 @@ git_xy:
 src:
   repo    : $src_repo
   branch  : $src_branch
-  path    : $src_path
+  path    : $o_src_path
   commit  : $src_commit_hash
   subject : $src_commit_subject
 dst:
@@ -222,7 +225,13 @@ git_xy() {
 
     __last_error
 
-    transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base]"
+    if [[ "$GIT_XY_REVERSE" == "yes" ]]; then
+      read -r src_repo src_branch src_path dst_repo dst_branch dst_path \
+        <<<"${dst_repo} ${dst_branch} ${dst_path} ${src_repo} ${src_branch} ${src_path}"
+      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base] [reversed]"
+    else
+      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base]"
+    fi
 
     if [[ -z "$dst_branch" ]]; then
       last_error="ERROR: Configuration is not valid: $transfer_request"
@@ -237,12 +246,19 @@ git_xy() {
     dst_path="${dst_path}/"
     src_path="$(sed -r -e "s#/+#/#g" <<<"$src_path")"
     dst_path="$(sed -r -e "s#/+#/#g" <<<"$dst_path")"
+
+    _rsync_delete=""
+
     o_dst_path="$dst_path"
     if [[ "${dst_path:0:1}" == ":" ]]; then
       dst_path="${dst_path:1}"
       _rsync_delete="--delete"
-    else
-      _rsync_delete=""
+    fi
+
+    o_src_path="${src_path}"
+    if [[ "${src_path:0:1}" == ":" ]]; then
+      src_path="${src_path:1}"
+      _rsync_delete="--delete"
     fi
 
     src_local_full_path="$(repo_local_full_path "$src_repo" "src_")"
