@@ -5,12 +5,12 @@
 #   src_repo src_branch src_path   dst_repo dst_branch dest_path [pr_base]
 #
 # The option `pr_base_repo` is optional and is used to specify where
-# you want the PR arrives. By default, it's the upstream repository.
+# you want the PR to be created. By default, it's the upstream repository.
 #
 # By default, `rsync` is used without `--delete` option, and this allows
 # downstream to add some additional files. If you want to make sure
 # the downstream is exactly at the upstream, please use a colon (:)
-# as prefix of the destination path, e.g, `:dst_path`
+# as prefix of the destination/source path, e.g, `:dst_path`
 #
 
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
