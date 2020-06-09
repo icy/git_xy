@@ -187,7 +187,7 @@ There are many tools trying to solve the code-sharing problem:
 ### Native support
 
 * `git submodule`:
-  Create a pointer (commit hash) to the upstream repositories, and
+  Create pointers to some commit hashes on the upstream repositories, and
   check out the upstream repository as sub-directory of the current
   repository upon request.
   It's you and your team who watch changes on upstream and fetch them
@@ -205,6 +205,9 @@ There are many tools trying to solve the code-sharing problem:
   
   Git-subtree original experimental project is found
   here https://github.com/apenwarr/git-subtree.
+
+Looked like `git submodule` requires you to understand C programming language,
+while `git submodule` is kind of Python which hides pointers from your laptop:D
 
 ### Meta-repository
 
