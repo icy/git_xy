@@ -225,7 +225,7 @@ There are many tools trying to solve the code-sharing problem:
   The basic tutorial is here:
   http://gitslave.sourceforge.net/tutorial-basic.html.
 
-### Very contraint tools
+### Very constraint tools
 
 * https://github.com/teambit/bit (npm only):
   Use this if your current Linux kernel is written in NodeJs.
