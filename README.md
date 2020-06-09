@@ -207,7 +207,7 @@ There are many tools trying to solve the code-sharing problem:
   here https://github.com/apenwarr/git-subtree.
 
 Looked like `git submodule` requires you to understand C programming language,
-while `git submodule` is kind of Python which hides pointers from your laptop:D
+while `git subtree` is kind of Python which hides pointers from your laptop:D
 
 ### Meta-repository
 
