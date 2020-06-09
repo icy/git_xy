@@ -184,6 +184,8 @@ Done
 
 There are many tools trying to solve the code-sharing problem:
 
+### Native support
+
 * `git submodule`:
   Create a pointer (commit hash) to the upstream repositories, and
   check out the upstream repository as sub-directory of the current
@@ -200,29 +202,31 @@ There are many tools trying to solve the code-sharing problem:
   bigger size, confused/noisy commit messages,
   and you have to learn how to merge (really?)
   Good reading: https://www.atlassian.com/git/tutorials/git-subtree
+
+### Meta-repository
+
 * https://github.com/ingydotnet/git-subrepo:
   Another `git-slave`-liked project, which helps to manage multiple
   small repositories. It uses `git work-tree`, and it helps to generate
-  pull/push/merge command in parallel. Forget your `git command`, as
-  you have to learn to use this new wrapper for all sub commands
+  pull/push/merge command in sub repositories by using the same command.
+  Forget your `git command`, as you have to learn to use this
+  new wrapper for all sub commands
   (commit, pull, merge...) Written completely in Bash.
 * https://github.com/twosigma/git-meta:
-  Looked like another `git-slave` which uses `git-submodule` to create
+  Another `git-slave` which uses `git-submodule` to create
   the meta repository. Another NodeJs tool
 * https://github.com/mateodelnorte/meta:
-  Looked like another `git-slave`, which creates a meta repository
+  Similar to `git-slave`, which creates a meta repository
   that includes multiple small repositories. You adapt both mono/micro
   repository idea. Written in NodeJs...
-* https://github.com/splitsh/lite:
-  Split a repository to read-only standalone repositories
-* https://github.com/unravelin/tomono:
-  You are hating micro-`***` enough and you just want a big repository
-  that includes all your small repositories. This tool helps you.
 * https://sourceforge.net/projects/gitslave/:
   The project is still on `sourceforge`, looked like it's not maintained.
   The idea is to have meta project which handles multiple repository.
   The basic tutorial is here:
   http://gitslave.sourceforge.net/tutorial-basic.html.
+
+### Very contraint tools
+
 * https://github.com/teambit/bit (npm only):
   Use this if your current Linux kernel is written in NodeJs.
 * https://github.com/lerna/lerna (javascript only):
@@ -231,6 +235,14 @@ There are many tools trying to solve the code-sharing problem:
   Use this if your server is running on Android.
 * https://github.com/microsoft/VFSForGit (sic, Windows only):
   Use this if you are running Linux inside a VM inside a Windows host.
+
+### Back-and-forth tools
+
+* https://github.com/splitsh/lite:
+  Split a repository to read-only standalone repositories
+* https://github.com/unravelin/tomono:
+  You hate micro-`***` enough and you just want a big repository
+  that includes all your small repositories. This tool helps you.
 
 Well, there are too many tools...
 What I really need is a simple way to pull changes from some repository
