@@ -201,7 +201,10 @@ There are many tools trying to solve the code-sharing problem:
   You get what you don't really mean: duplication of commits,
   bigger size, confused/noisy commit messages,
   and you have to learn how to merge (really?)
-  Good reading: https://www.atlassian.com/git/tutorials/git-subtree
+  Good reading: https://www.atlassian.com/git/tutorials/git-subtree.
+  
+  Git-subtree original experimental project is found
+  here https://github.com/apenwarr/git-subtree.
 
 ### Meta-repository
 
