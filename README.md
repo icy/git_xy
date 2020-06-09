@@ -28,7 +28,7 @@ See more details in [How it works](#how-it-works).
 
 ## Usage
 
-**WARNING:** The project is still in `\alpha` stage.
+**WARNING:** The project is still in `\beta` stage.
 
 ### Installation
 
