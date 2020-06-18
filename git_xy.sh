@@ -242,8 +242,17 @@ git_xy() {
     log "Watching $transfer_request"
     log "=============================================================="
 
-    src_path="${src_path}/"
-    dst_path="${dst_path}/"
+    src_path="${src_path}"
+    dst_path="${dst_path}"
+
+    if [[ "${src_path: -1}" == "/" || "${dst_path}" == "/" ]]; then
+      _rsync_type="DIR"
+      src_path="${src_path}/"
+      dst_path="${dst_path}/"
+    else
+      _rsync_type="FILE"
+    fi
+
     src_path="$(sed -r -e "s#/+#/#g" <<<"$src_path")"
     dst_path="$(sed -r -e "s#/+#/#g" <<<"$dst_path")"
 
@@ -270,8 +279,17 @@ git_xy() {
       continue
     }
 
-    if [[ ! -d "$src_local_full_path/$src_path" ]]; then
-      last_error="ERROR: Expected path not found: $src_local_full_path/$src_path"
+    if [[ "$_rsync_type" == "DIR" \
+      && ! -d "$src_local_full_path/$src_path" ]] \
+    ; then
+      last_error="ERROR: Expected directory not found: $src_local_full_path/$src_path/"
+      continue
+    fi
+
+    if [[ "$_rsync_type" == "FILE" \
+      && ! -f "$src_local_full_path/$src_path" ]] \
+    ; then
+      last_error="ERROR: Expected file not found: $src_local_full_path/$src_path/"
       continue
     fi
 
@@ -297,8 +315,11 @@ git_xy() {
     # dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 
     (
-      mkdir -pv "$dst_local_full_path/$dst_path"
-      cd "$dst_local_full_path/$dst_path" || exit
+      [[ "$_rsync_type" == "FILE" ]] \
+      || {
+        mkdir -pv "$dst_local_full_path/$dst_path"
+        cd "$dst_local_full_path/$dst_path" || exit
+      }
 
       if git rev-parse "origin/$dst_branch_sync" 1>/dev/null 2>&1; then
         log "Reusing remote branch origin/$dst_branch_sync..."
@@ -338,11 +359,13 @@ git_xy() {
   __last_error
 
   for _req in "${!GIT_XY_ERRORS[@]}"; do
+    log ""
     log "REPORT: request: $_req"
     log "REPORT: message: ${GIT_XY_ERRORS["$_req"]}"
   done
 
-  log "INFO: git_xy received $n_config request(s) and successfully proccessed $n_config_ok request(s)."
+  log ""
+  log "REPORT: git_xy received $n_config request(s) and successfully proccessed $n_config_ok request(s)."
   [[ "$n_config_ok" == "$n_config" ]]
 }
 

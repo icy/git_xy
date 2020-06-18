@@ -13,8 +13,13 @@
 # as prefix of the destination/source path, e.g, `:dst_path`
 #
 
+# Directories
+
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  ng      lib/    icyfork/pacapt
 git@github.com:foo/bar        foo bar/   git@github.com:icyfork/foo     bar     foobar
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
 git@github.com:icyfork/pacapt ng     /   git@github.com:icyfork/pacapt  master  /       icyfork/pacapt
+
+# Some files
+git@github.com:icyfork/pacapt ng   CHANGELOG.md   git@github.com:icyfork/pacapt  v2.0  CHANGELOG.md       icyfork/pacapt
