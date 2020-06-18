@@ -166,6 +166,7 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] More `POSIX` ;)
 - [ ] `hook/gh`: Return zero if a PR already exists
 - [ ] Sometimes we only need to create a PR without generate any commit
+- [ ] Support file synchronization...
 
 Done
 
