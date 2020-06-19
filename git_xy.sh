@@ -315,12 +315,6 @@ git_xy() {
     # dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 
     (
-      [[ "$_rsync_type" == "FILE" ]] \
-      || {
-        mkdir -pv "$dst_local_full_path/$dst_path"
-        cd "$dst_local_full_path/$dst_path" || exit
-      }
-
       if git rev-parse "origin/$dst_branch_sync" 1>/dev/null 2>&1; then
         log "Reusing remote branch origin/$dst_branch_sync..."
         git branch -D "$dst_branch_sync" || true
@@ -335,6 +329,14 @@ git_xy() {
       last_error="ERROR: Failed to created git_xy branch: $dst_branch_sync"
       continue
     }
+
+    if [[ "$_rsync_type" == "DIR" ]]; then
+      mkdir -pv "$dst_local_full_path/$dst_path"
+      # FIXME: We can skip this check
+      cd "$dst_local_full_path/$dst_path" || exit
+    else
+      mkdir -pv "$(dirname "$dst_local_full_path/$dst_path")"
+    fi
 
     rsync -rap $_rsync_delete \
       --exclude=".git/*" \
