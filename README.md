@@ -28,8 +28,6 @@ See more details in [How it works](#how-it-works).
 
 ## Usage
 
-**WARNING:** The project is still in `\beta` stage.
-
 ### Installation
 
 `git_xy` is a Bash4 script. It requires some additional tools on system:
