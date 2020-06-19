@@ -315,6 +315,8 @@ git_xy() {
     # dst_branch_sync="$(sed -r -e "s#/+#/#g" -e "s#/+\$##g" <<< "$dst_branch_sync")"
 
     (
+      cd "$dst_local_full_path/" || exit
+
       if git rev-parse "origin/$dst_branch_sync" 1>/dev/null 2>&1; then
         log "Reusing remote branch origin/$dst_branch_sync..."
         git branch -D "$dst_branch_sync" || true
@@ -332,12 +334,11 @@ git_xy() {
 
     if [[ "$_rsync_type" == "DIR" ]]; then
       mkdir -pv "$dst_local_full_path/$dst_path"
-      # FIXME: We can skip this check
-      cd "$dst_local_full_path/$dst_path" || exit
     else
       mkdir -pv "$(dirname "$dst_local_full_path/$dst_path")"
     fi
 
+    # FIXME: Switch to the destination before rsync?
     rsync -rap $_rsync_delete \
       --exclude=".git/*" \
       "$src_local_full_path/$src_path" \
