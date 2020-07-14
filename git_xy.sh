@@ -116,9 +116,10 @@ __hook_gh() {
     _pr_base=""
   fi
 
+  # shellcheck disable=SC2086
   2>&1 \
   gh pr create \
-    "$_pr_base" \
+    $_pr_base \
     --base "$dst_branch" \
     --title "git_xy/$src_repo branch $src_branch path $src_path" \
     --body "\`\`\`
