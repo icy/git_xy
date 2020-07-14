@@ -146,6 +146,10 @@ dst:
         if ($0 ~ /^a pull request for branch .+ already exists:/) {
           _exist=1
         }
+        if ($0 ~ /^failed to create pull request: graphql error:.+No commits between .+ and/) {
+          _exist=2
+        }
+
       }
       END {
         exit(_exist)
@@ -155,6 +159,9 @@ dst:
   rets=("${PIPESTATUS[@]}")
   if [[ "${rets[1]}" == 1 ]]; then
     GIT_XY_ERRORS["_${transfer_request}"]="WARNING: Pull request already exists."
+    return 0
+  elif [[ "${rets[1]}" == 2 ]]; then
+    GIT_XY_ERRORS["_${transfer_request}"]="WARNING: No commis between two branches."
     return 0
   else
     return "${rets[0]}"
