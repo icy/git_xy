@@ -164,11 +164,12 @@ Well, it's so easy right? It's an automation support of your handy commands.
 - [ ] Add tests and automation support for the project
 - [ ] Provide a link to the original source
 - [ ] More `POSIX` ;)
-- [ ] `hook/gh`: Return zero if a PR already exists
 - [ ] Sometimes we only need to create a PR without generate any commit
+- [ ] Re-use existing branch to generate new PR
 
 Done
 
+- [x] `hook/gh`: Return zero if a PR already exists
 - [x] Support file synchronization...
 - [x] Add option to reverse the synchronization (dst becomes src and vice versa)
 - [x] Better error reporting
