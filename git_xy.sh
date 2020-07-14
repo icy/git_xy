@@ -118,7 +118,7 @@ __hook_gh() {
 
   2>&1 \
   gh pr create \
-    $_pr_base \
+    "$_pr_base" \
     --base "$dst_branch" \
     --title "git_xy/$src_repo branch $src_branch path $src_path" \
     --body "\`\`\`
