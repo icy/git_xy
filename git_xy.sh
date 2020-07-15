@@ -154,6 +154,8 @@ dst:
   branch  : $dst_branch
   path    : $o_dst_path
   commit  : $dst_commit_hash
+options:
+  rsync   : $rsync_opts
 \`\`\`" \
   | awk '
       BEGIN{
