@@ -50,19 +50,16 @@ Configuration consists of source/destination specification in the following
 format:
 
 ```
-src_repo src_branch src_path   dst_repo dst_branch dest_path [pr_base]
+src_repo src_branch src_path   dst_repo dst_branch dest_path [pr_base] [rsync_options]
 ```
 which reads in the order
 
 * `src_repo`, `src_branch`, `src_path`: The source repository, branch and path
 * `dst_repo`, `dst_branch`, `dst_path`: The destination repository, branch and path.
-  By default, `rsync` without `--delete` option is used, which allows the
-  downstream (destination) path to contain their own additional files.
-  If you want destination to be exact the upstream, use the colon (`:`)
-  as prefix of the destination path, i.e., `:dst_path`.
-
-The last part `pr_base` is optional and is used to specify where
-you want the PR arrives. By default, it's the upstream repository.
+* `pr_base` is optional and is used to specify where you want the PR arrives.
+  By default, it's the upstream repository.
+* `rsync_options` (optional): Any options for `rsync` command. The first option
+  should start with `-`.
 
 See examples in [git_xy.config-sample.txt](git_xy.config-sample.txt).
 
@@ -151,9 +148,9 @@ the script will do as below
   This branch is specially used for PR creation.
 * Use `rsync` to synchronize the contents of the `src_path` and `dst_path`.
   On the local machine where the script runs, it's a variant of the command
-  `rsync -ra --delete SRC/ DST/` here
-  `SRC` is `~/.local/share/git_xy/src_repo/src_path/` and
-  `DST` is `~/.local/share/git_xy/dst_repo/dst_path/`
+  `rsync -ra SRC DST` here
+  `SRC` is `~/.local/share/git_xy/src_repo/src_path` and
+  `DST` is `~/.local/share/git_xy/dst_repo/dst_path`
 * Generate new commit
 * If specified, execute the hook to generate new pull request on Github
 

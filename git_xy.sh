@@ -213,6 +213,8 @@ dst:
   branch  : $dst_branch
   path    : $o_dst_path
   commit  : $dst_commit_hash
+options:
+  rsync   : $rsync_opts
 \`\`\`
 "
     # shellcheck disable=SC2086
@@ -249,18 +251,24 @@ git_xy() {
   last_error=""
 
   # Loop is generated for every line from configuration file
-  while read -r src_repo src_branch src_path dst_repo dst_branch dst_path pr_base _; do
+  while read -r src_repo src_branch src_path dst_repo dst_branch dst_path rsync_opts; do
     (( n_config++ ))
 
     __last_error
+
+    if [[ "${rsync_opts:0:1}" != "-" ]]; then
+      read -r pr_base rsync_opts <<<"${rsync_opts}"
+    else
+      pr_base=""
+    fi
 
     # In case we need to change the direction, we need to do that here
     if [[ "$GIT_XY_REVERSE" == "yes" ]]; then
       read -r src_repo src_branch src_path dst_repo dst_branch dst_path \
         <<<"${dst_repo} ${dst_branch} ${dst_path} ${src_repo} ${src_branch} ${src_path}"
-      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base] [reversed]"
+      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base, rsync: $rsync_opts] [reversed]"
     else
-      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base]"
+      transfer_request="$src_repo $src_branch $src_path ==> $dst_repo $dst_branch $dst_path [pr_base: $pr_base, rsync: $rsync_opts]"
     fi
 
     if [[ -z "$dst_branch" ]]; then
@@ -286,19 +294,8 @@ git_xy() {
     src_path="$(sed -r -e "s#/+#/#g" <<<"$src_path")"
     dst_path="$(sed -r -e "s#/+#/#g" <<<"$dst_path")"
 
-    _rsync_delete=""
-
-    o_dst_path="$dst_path"
-    if [[ "${dst_path:0:1}" == ":" ]]; then
-      dst_path="${dst_path:1}"
-      _rsync_delete="--delete"
-    fi
-
+    o_dst_path="${dst_path}"
     o_src_path="${src_path}"
-    if [[ "${src_path:0:1}" == ":" ]]; then
-      src_path="${src_path:1}"
-      _rsync_delete="--delete"
-    fi
 
     src_local_full_path="$(repo_local_full_path "$src_repo" "src_")"
     dst_local_full_path="$(repo_local_full_path "$dst_repo" "dst_")"
@@ -372,8 +369,12 @@ git_xy() {
       mkdir -pv "$(dirname "$dst_local_full_path/$dst_path")"
     fi
 
-    # FIXME: Switch to the destination before rsync?
-    rsync -rap $_rsync_delete \
+    # FIXED: Switch to the destination before rsync? None,
+    # FIXED: as we may want to grab some configuration file (rsync_opts)
+    # FIXME: Better quoting handle for `rsync_opts`
+    # shellcheck disable=SC2086
+    rsync -rap \
+      $rsync_opts \
       --exclude=".git/*" \
       "$src_local_full_path/$src_path" \
       "$dst_local_full_path/$dst_path" \

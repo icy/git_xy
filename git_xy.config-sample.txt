@@ -15,9 +15,9 @@
 
 # Directories
 
-git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
+git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt --delete
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  ng      lib/    icyfork/pacapt
-git@github.com:foo/bar        foo bar/   git@github.com:icyfork/foo     bar     foobar
+git@github.com:foo/bar        foo bar/   git@github.com:icyfork/foo     bar     foobar  --delete
 git@github.com:icyfork/pacapt ng  lib/   git@github.com:icyfork/pacapt  master  testx/  icyfork/pacapt
 git@github.com:icyfork/pacapt ng     /   git@github.com:icyfork/pacapt  master  /       icyfork/pacapt
 
