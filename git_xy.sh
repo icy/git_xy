@@ -41,7 +41,7 @@ git_xy_env() {
 
   mkdir -pv "$D_GIT_SYNC"
 
-  if [[ ! -f "$GIT_XY_CONFIG" ]]; then
+  if [[ ! -f "$GIT_XY_CONFIG" && "$GIT_XY_CONFIG" != "-" ]]; then
     log "ERROR: Configuration file not found: $GIT_XY_CONFIG"
     return 1
   fi
@@ -54,7 +54,7 @@ git_xy_env() {
 
 # Read useful lines from configuration file
 config() {
-  < "$GIT_XY_CONFIG" grep -v '#' \
+  grep -v '#' -- "${GIT_XY_CONFIG}" \
   | awk 'NF >= 6'
 }
 
@@ -391,7 +391,7 @@ git_xy() {
       continue
     }
 
-    log "INFO: git_xy successfully process the request: $transfer_request"
+    log "INFO: git_xy successfully processed the request: $transfer_request"
 
     (( n_config_ok++ ))
   done < <(config)
