@@ -2,7 +2,8 @@
 
 `git_xy` helps to synchronize sub directories between git repositories
 semi-automatically, and may generate pull requests on `github` if
-changes are detected on the destination repository.
+changes are detected on the destination repository. It works like
+`rsync`, but for git repositories.
 
 `git_xy` reads a list of source/destination specifications from a
 configuration file, and for each of them, `git_xy` fetches changes
