@@ -28,6 +28,15 @@ requirements_check() {
 # Prepare some essential configurations for the script.
 # We read them from the current shell environment.
 git_xy_env() {
+  GIT_XY_ENV_FILE="${GIT_XY_ENV_FILE:-git_xy.env}"
+  export GIT_XY_ENV_FILE
+  readonly GIT_XY_ENV_FILE
+
+  if [[ -f "${GIT_XY_ENV_FILE}" ]]; then
+    log "INFO: Loading external configuration file: '$GIT_XY_ENV_FILE'"
+    source "$GIT_XY_ENV_FILE" || return
+  fi
+
   GIT_XY_CONFIG="${GIT_XY_CONFIG:-git_xy.config}"
   D_GIT_SYNC="$HOME/.local/share/git_xy/"
   GIT_XY_HOOKS="${GIT_XY_HOOKS-gh}"
@@ -107,6 +116,29 @@ git_pull() {
   )
 }
 
+__pr_commit_message() {
+  cat <<EOF
+git_xy:
+  version: ${GIT_XY_VERSION}
+src:
+  repo    : $src_repo
+  branch  : $src_branch
+  path    : $o_src_path
+  commit  : $src_commit_hash
+  subject : $src_commit_subject
+dst:
+  repo    : $dst_repo
+  branch  : $dst_branch
+  path    : $o_dst_path
+  commit  : $dst_commit_hash
+options:
+  rsync   :
+    options: $rsync_opts
+    def: |
+$(declare -f git_xy_rsync | awk '{printf("      %s\n",$0)}')
+EOF
+}
+
 # Generate a Github pull request
 # Will return 0 if there is an existing branch and/or
 # there is not commits between two branches.
@@ -141,21 +173,7 @@ __hook_gh() {
     --base "$dst_branch" \
     --title "git_xy/sync from $src_repo ref=$src_branch path=$src_path" \
     --body "\`\`\`
-git_xy:
-  version: ${GIT_XY_VERSION}
-src:
-  repo    : $src_repo
-  branch  : $src_branch
-  path    : $o_src_path
-  commit  : $src_commit_hash
-  subject : $src_commit_subject
-dst:
-  repo    : $dst_repo
-  branch  : $dst_branch
-  path    : $o_dst_path
-  commit  : $dst_commit_hash
-options:
-  rsync   : $rsync_opts
+$(__pr_commit_message)
 \`\`\`" \
   | awk '
       BEGIN{
@@ -202,21 +220,7 @@ __dst_commit_changes_if_any() {
   git commit -a -m"git_xy/$src_repo branch $src_branch path $src_path
 
 \`\`\`
-git_xy:
-  version: ${GIT_XY_VERSION}
-src:
-  repo    : $src_repo
-  branch  : $src_branch
-  path    : $o_src_path
-  commit  : $src_commit_hash
-  subject : $src_commit_subject
-dst:
-  repo    : $dst_repo
-  branch  : $dst_branch
-  path    : $o_dst_path
-  commit  : $dst_commit_hash
-options:
-  rsync   : $rsync_opts
+$(__pr_commit_message)
 \`\`\`
 "
     # shellcheck disable=SC2086
@@ -244,6 +248,11 @@ __last_error() {
     log "ERROR: git_xy failed to process the request: $transfer_request"
   }
   last_error=""
+}
+
+# A simple wrapper for rsync.
+git_xy_rsync() {
+  rsync "${@}"
 }
 
 # The main program
@@ -375,7 +384,7 @@ git_xy() {
     # FIXED: as we may want to grab some configuration file (rsync_opts)
     # FIXME: Better quoting handle for `rsync_opts`
     # shellcheck disable=SC2086
-    rsync -rap \
+    git_xy_rsync -rap \
       $rsync_opts \
       --exclude=".git/*" \
       "$src_local_full_path/$src_path" \
@@ -415,7 +424,7 @@ main() {
   && git_xy
 }
 
-GIT_XY_VERSION="1.0.0"
+GIT_XY_VERSION="1.2.0"
 export GIT_XY_VERSION
 
 declare -A GIT_XY_ERRORS
