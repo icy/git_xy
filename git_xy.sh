@@ -251,6 +251,14 @@ __last_error() {
 }
 
 # A simple wrapper for rsync.
+# The method is invoked as below:
+#
+#    git_xy_rsync \
+#      "$src_local_full_path/$src_path" \
+#      "$dst_local_full_path/$dst_path" \
+#      -rap \
+#      $rsync_opts \
+#      --exclude=".git/*" \
 git_xy_rsync() {
   rsync "${@}"
 }
@@ -384,11 +392,12 @@ git_xy() {
     # FIXED: as we may want to grab some configuration file (rsync_opts)
     # FIXME: Better quoting handle for `rsync_opts`
     # shellcheck disable=SC2086
-    git_xy_rsync -rap \
-      $rsync_opts \
-      --exclude=".git/*" \
+    git_xy_rsync \
       "$src_local_full_path/$src_path" \
       "$dst_local_full_path/$dst_path" \
+      -rap \
+      $rsync_opts \
+      --exclude=".git/*" \
     || {
       last_error="ERROR: Failed to executed rsync command."
       continue
