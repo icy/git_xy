@@ -139,7 +139,7 @@ __hook_gh() {
   gh pr create \
     $_pr_base \
     --base "$dst_branch" \
-    --title "git_xy/$src_repo branch $src_branch path $src_path" \
+    --title "git_xy/sync from $src_repo ref=$src_branch path=$src_path" \
     --body "\`\`\`
 git_xy:
   version: ${GIT_XY_VERSION}
