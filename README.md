@@ -219,6 +219,12 @@ while `git subtree` is kind of Python which hides pointers from your laptop:D
 
 ### Meta-repository
 
+* https://github.com/zephyrproject-rtos/west:
+  This tool is origined from Zephyr-RTOS project, and inspired by
+  google repo tool and `git submodule`. By default, it uses Zephyr's manifest file
+  (https://github.com/zephyrproject-rtos/zephyr/blob/master/west.yml) but it
+  doesn't really care much, that means the tool can be used by other project too.
+  I've found this tool on July 2nd 2021. I'll get back with some reviews.
 * https://github.com/ingydotnet/git-subrepo:
   Another `git-slave`-liked project, which helps to manage multiple
   small repositories. It uses `git work-tree`, and it helps to generate
