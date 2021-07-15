@@ -1,5 +1,8 @@
 ## Description
 
+**WARNING**:
+This project is written for educational purpose only. Use them at your own risk.
+
 `git_xy` helps to synchronize sub directories between git repositories
 semi-automatically, and may generate pull requests on `github` if
 changes are detected on the destination repository. It works like
