@@ -28,6 +28,10 @@ See more details in [How it works](#how-it-works).
   * [How it works](#how-it-works)
 * [TODO](#todo)
 * [Why](#why)
+  * [Native support](#native-support)
+  * [Meta repository](#meta-repository)
+  * [Very contraint tools](#very-constraint-tools)
+  * [Back-and-forth tools](#back-and-forth-tools)
 * [Resources](#resources)
 * [Author. License](#author-license)
 
