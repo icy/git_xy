@@ -289,8 +289,10 @@ micro-repository `design` (if any) :D
 
 ## Resources
 
-* A monorepo misconception - atomic cross-project commits: https://www.snellman.net/blog/archive/2021-07-21-monorepo-atomic/, https://news.ycombinator.com/item?id=27903282
-* 
+* A monorepo misconception - atomic cross-project commits: 
+  https://www.snellman.net/blog/archive/2021-07-21-monorepo-atomic/, 
+  https://news.ycombinator.com/item?id=27903282
+
 ## Author. License
 
 The script is written by Ky-Anh Huynh.
