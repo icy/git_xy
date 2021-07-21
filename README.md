@@ -28,6 +28,7 @@ See more details in [How it works](#how-it-works).
   * [How it works](#how-it-works)
 * [TODO](#todo)
 * [Why](#why)
+* [Resources](#resources)
 * [Author. License](#author-license)
 
 ## Usage
@@ -222,6 +223,11 @@ while `git subtree` is kind of Python which hides pointers from your laptop:D
 
 ### Meta-repository
 
+* https://github.com/esrlabs/josh: Acting likes `nginx`-reverse proxy, 
+  `josh` combines the advantages of a monorepo with those of multirepo setups 
+  by leveraging a blazingly-fast, incremental, and reversible implementation 
+  of git history filtering. Discussing on HN:
+  https://news.ycombinator.com/item?id=27844363
 * https://github.com/zephyrproject-rtos/west:
   This tool is origined from Zephyr-RTOS project, and inspired by
   google repo tool and `git submodule`. By default, it uses Zephyr's manifest file
@@ -277,6 +283,10 @@ repository is updated. Human intervention is not the right way when
 there are just 100 or 500 repositories because of the raise of the
 micro-repository `design` (if any) :D
 
+## Resources
+
+* A monorepo misconception - atomic cross-project commits: https://www.snellman.net/blog/archive/2021-07-21-monorepo-atomic/, https://news.ycombinator.com/item?id=27903282
+* 
 ## Author. License
 
 The script is written by Ky-Anh Huynh.
