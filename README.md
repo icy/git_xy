@@ -228,13 +228,16 @@ while `git subtree` is kind of Python which hides pointers from your laptop:D
 ### Meta-repository
 
 * https://github.com/esrlabs/josh: Acting likes `nginx`-reverse proxy, 
-  `josh` combines the advantages of a monorepo with those of multirepo setups 
+  `josh` "combines the advantages of a monorepo with those of multirepo setups 
   by leveraging a blazingly-fast, incremental, and reversible implementation 
-  of git history filtering. Discussing on HN:
+  of git history filtering". Discussing on HN:
   https://news.ycombinator.com/item?id=27844363
 * https://github.com/zephyrproject-rtos/west:
   This tool is origined from Zephyr-RTOS project, and inspired by
-  google repo tool and `git submodule`. By default, it uses Zephyr's manifest file
+  google repo tool and `git submodule`. 
+  "West lets you manage multiple Git repositories under a single 
+  directory using a single file, called the west manifest file, or manifest for short."
+  By default, it uses Zephyr's manifest file
   (https://github.com/zephyrproject-rtos/zephyr/blob/master/west.yml) but it
   doesn't really care much, that means the tool can be used by other project too.
   I've found this tool on July 2nd 2021. I'll get back with some reviews.
